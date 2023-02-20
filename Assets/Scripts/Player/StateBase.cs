@@ -19,10 +19,12 @@ public abstract class StateBase
     //Stats de calcul
     protected float trueZPosition, trueXPosition;
     protected int currentZPosition, currentXPosition;
-    protected Vector3 currentDirection = Vector3.forward;
     #endregion
 
     #region PublicMethods
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public StateBase(PlayerMovement pm)
     {
         movement = pm;
@@ -31,7 +33,7 @@ public abstract class StateBase
     /// <summary>
     /// Initialisation correcte etat
     /// </summary>
-    public abstract void EnterState();
+    public abstract void EnterState(float vel, Vector3 oldDir, Vector3 newDir, float tzp, float txp);
     /// <summary>
     /// Calculs d'etat
     /// </summary>
@@ -50,6 +52,9 @@ public abstract class StateBase
         3 * (statAcceleration / 10f) + 3;
     protected float TranslateBraking() =>
         3 * (statBraking / 10f) + 5;
+    protected float TranslateHandling() =>
+        2.5f * (statHandling / 10f) + 2;
+    //
 
     /// <summary>
     /// Permet de s'assurer que notre position est toujours "un nombre 
@@ -66,16 +71,6 @@ public abstract class StateBase
             movement.transform.position = new Vector3(currentXPosition / 6f,
                 0f, currentZPosition / 6f);
         }
-
-        /////////////////
-        ///
-        if (movement.transform.position.z >= 5)
-        {
-            trueXPosition = 0;
-            trueZPosition = -5f;
-        }
-        /////////////////
-        ///
     }
     #endregion
 }

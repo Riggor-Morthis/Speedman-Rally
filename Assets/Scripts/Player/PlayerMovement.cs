@@ -8,9 +8,9 @@ public class PlayerMovement : MonoBehaviour
 {
     #region Variables
     //State machine
-    private StateBase currentState;
+    public StateBase currentState;
     public GrippingState grippingState { get; private set; }
-    public DriftingState driftingState { get; private set; }
+    public SlidingState slidingState { get; private set; }
 
     //Components
     private PlayerInputs inputs;
@@ -46,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
         inputs = GetComponent<PlayerInputs>();
 
         grippingState = new GrippingState(this);
-        driftingState = new DriftingState(this);
+        slidingState = new SlidingState(this);
         currentState = grippingState;
     }
 
