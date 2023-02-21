@@ -43,6 +43,11 @@ public class GrippingState : StateBase
             currentDirection.x * -movement.turnInput),
             trueZPosition, trueXPosition);
     }
+
+    public override float GetSpeedRatio()
+    {
+        return velocity / TranslateTopSpeed();
+    }
     #endregion
 
     #region PrivateMethods

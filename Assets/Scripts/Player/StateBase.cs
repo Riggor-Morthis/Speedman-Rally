@@ -42,6 +42,10 @@ public abstract class StateBase
     /// Conditions de sortie d'etat
     /// </summary>
     public abstract void ExitState();
+    /// <summary>
+    /// Pourcentage entre la vitesse actuelle et la vitesse maximale
+    /// </summary>
+    public abstract float GetSpeedRatio();
     #endregion
 
     #region PrivateMethods

@@ -55,6 +55,11 @@ public class SlidingState : StateBase
         movement.currentState.EnterState(rightVelocity, wrongDirection,
             rightDirection, trueZPosition, trueXPosition);
     }
+
+    public override float GetSpeedRatio()
+    {
+        return (wrongVelocity + rightVelocity) / TranslateTopSpeed();
+    }
     #endregion
 
     #region PrivateMethods

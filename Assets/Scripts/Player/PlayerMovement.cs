@@ -37,6 +37,10 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
+    #region Public Methods
+    public float GetSpeedRatio() => currentState.GetSpeedRatio();
+    #endregion
+
     #region PrivateMethods
     /// <summary>
     /// Initialise variables
