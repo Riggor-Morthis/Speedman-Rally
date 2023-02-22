@@ -7,12 +7,13 @@ public class PlayerInputs : MonoBehaviour
     #region Variables
     public float pedalsInput { get; private set; }
     /// <summary>For 90deg turns</summary>
-    public float turnInput { get; private set; }
+    private float turnInput;
     /// <summary>For 1 block slides</summary>
     public float steerInput { get; private set; }
     public bool menuConfirmInput { get; private set; }
 
     private float deadZone = .4f;
+    private float turnBuffer;
     #endregion
 
     #region UnityMethods
@@ -24,5 +25,14 @@ public class PlayerInputs : MonoBehaviour
         steerInput = iv.Get<float>() != 0 ? Mathf.Sign(iv.Get<float>()) : 0;
     public void OnMenuConfirm(InputValue iv) =>
         menuConfirmInput = iv.Get<float>() > deadZone;
+    #endregion
+
+    #region PublicMethods
+    public float GetTurnInput()
+    {
+        turnBuffer = turnInput;
+        turnInput = 0f;
+        return turnBuffer;
+    }
     #endregion
 }

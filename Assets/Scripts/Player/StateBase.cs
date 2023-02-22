@@ -28,6 +28,9 @@ public abstract class StateBase
     public StateBase(PlayerMovement pm)
     {
         movement = pm;
+        trueZPosition = movement.transform.position.z;
+        trueXPosition = movement.transform.position.x;
+        SetCorrectPosition();
     }
 
     /// <summary>
@@ -46,16 +49,28 @@ public abstract class StateBase
     /// Pourcentage entre la vitesse actuelle et la vitesse maximale
     /// </summary>
     public abstract float GetSpeedRatio();
+    /// <summary>
+    /// Recupere la direction actuelle de la voiture
+    /// </summary>
+    public abstract Vector3 GetDirection();
     #endregion
 
     #region PrivateMethods
     //Translate player-friendly stats into maths-friendly stats
-    protected float TranslateTopSpeed() =>
+    protected float TranslateTopSpeed()
+    {
+        if (movement.steerInput != 0) return (17.5f * (statTopSpeed / 10f) + 10) * .8f;
+        else return 17.5f * (statTopSpeed / 10f) + 10;
+    }
+    protected float TranslateTrueTopSpeed() =>
         17.5f * (statTopSpeed / 10f) + 10;
-    protected float TranslateAcceleration() =>
-        3 * (statAcceleration / 10f) + 3;
+    protected float TranslateAcceleration()
+    {
+        if (movement.steerInput != 0) return (3 * (statAcceleration / 10f) + 3) * .75f;
+        return 3 * (statAcceleration / 10f) + 3;
+    }
     protected float TranslateBraking() =>
-        3 * (statBraking / 10f) + 5;
+        3 * (statBraking / 10f) + 2;
     protected float TranslateHandling() =>
         2.5f * (statHandling / 10f) + 2;
     //

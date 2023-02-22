@@ -47,6 +47,7 @@ public class SlidingState : StateBase
         SetCorrectPosition();
 
         if (wrongVelocity == 0) ExitState();
+        else if (movement.turnInput != 0 && rightVelocity > 0) Reslide();
     }
 
     public override void ExitState()
@@ -56,10 +57,8 @@ public class SlidingState : StateBase
             rightDirection, trueZPosition, trueXPosition);
     }
 
-    public override float GetSpeedRatio()
-    {
-        return (wrongVelocity + rightVelocity) / TranslateTopSpeed();
-    }
+    public override float GetSpeedRatio() => (rightVelocity + wrongVelocity) / TranslateTrueTopSpeed();
+    public override Vector3 GetDirection() => rightDirection;
     #endregion
 
     #region PrivateMethods
@@ -70,13 +69,10 @@ public class SlidingState : StateBase
     {
         DecreaseSliding();
 
-        if (movement.pedalsInput > 0)
+        if (movement.pedalsInput > 0 && rightVelocity < TranslateTopSpeed())
         {
-            if (rightVelocity < TranslateTopSpeed())
-            {
-                rightVelocity += (TranslateAcceleration() / 2f) * Time.deltaTime;
-                if (rightVelocity > TranslateTopSpeed()) rightVelocity = TranslateTopSpeed();
-            }
+            rightVelocity += TranslateAcceleration() * Time.deltaTime;
+            if (rightVelocity > TranslateTopSpeed()) rightVelocity = TranslateTopSpeed();
         }
         else if (rightVelocity > 0)
         {
@@ -124,11 +120,23 @@ public class SlidingState : StateBase
     {
         if (movement.steerInput != 0 && rightVelocity > 0)
         {
-            trueXPosition += (TranslateHandling() / 2f) * Time.deltaTime
+            trueXPosition += TranslateHandling() * Time.deltaTime
                 * rightDirection.z * movement.steerInput;
-            trueZPosition += (TranslateHandling() / 2f) * Time.deltaTime
+            trueZPosition += TranslateHandling() * Time.deltaTime
                 * rightDirection.x * -movement.steerInput;
         }
+    }
+
+    /// <summary>
+    /// Permet de tourner a nouveau durant une slide
+    /// </summary>
+    private void Reslide()
+    {
+        movement.currentState = movement.slidingState;
+        movement.currentState.EnterState(rightVelocity, rightDirection, new Vector3(
+            rightDirection.z * movement.turnInput, 0f,
+            rightDirection.x * -movement.turnInput),
+            trueZPosition, trueXPosition);
     }
     #endregion
 }

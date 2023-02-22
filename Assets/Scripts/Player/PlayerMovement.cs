@@ -39,6 +39,7 @@ public class PlayerMovement : MonoBehaviour
 
     #region Public Methods
     public float GetSpeedRatio() => currentState.GetSpeedRatio();
+    public Vector3 GetDirection() => currentState.GetDirection();
     #endregion
 
     #region PrivateMethods
@@ -47,11 +48,13 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void InitializeVariables()
     {
+        //Components
         inputs = GetComponent<PlayerInputs>();
-
+        //State machine
         grippingState = new GrippingState(this);
         slidingState = new SlidingState(this);
         currentState = grippingState;
+        
     }
 
     /// <summary>
@@ -60,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
     private void GatherInputs()
     {
         pedalsInput = inputs.pedalsInput;
-        turnInput = inputs.turnInput;
+        turnInput = inputs.GetTurnInput();
         steerInput = inputs.steerInput;
     }
 
