@@ -64,7 +64,7 @@ public class GrippingState : StateBase
         {
             if (movement.pedalsInput < 0)
                 velocity -= TranslateBraking() * Time.deltaTime;
-            else velocity -= Time.deltaTime;
+            else if (movement.pedalsInput == 0) velocity -= Time.deltaTime;
             if (velocity < 0) velocity = 0;
         }
 

@@ -12,7 +12,7 @@ public class LevelCreator : MonoBehaviour
     [SerializeField]
     private GameObject[] blokz;
 
-    private string mapPath = "Map/Forest1";
+    private string mapPath = "Map/Forest3";
     private Texture2D mapTexture;
 
     private Vector2Int startPosition;
@@ -32,7 +32,7 @@ public class LevelCreator : MonoBehaviour
     private void GetTilePath()
     {
         //Recup map
-        mapTexture = Resources.Load<Texture2D>(mapPath);
+        mapTexture = WaveFunctionCollapse.StartTheWave(Resources.Load<Texture2D>(mapPath));
 
         //Cherche depart
         for (int i = 0; i < mapTexture.width; i++)
@@ -108,26 +108,26 @@ public class LevelCreator : MonoBehaviour
         }
 
         //On instancie niveau
-        short[,] level = new short[maxXDimension - minXDimension + 3, maxYDimension - minYDimension + 3];
-        startPosition = new Vector2Int(startPosition.x - minXDimension + 1,
-            startPosition.y - minYDimension + 1);
+        short[,] level = new short[maxXDimension - minXDimension + 7, maxYDimension - minYDimension + 7];
+        startPosition = new Vector2Int(startPosition.x - minXDimension + 3,
+            startPosition.y - minYDimension + 3);
 
         //On retrace le chemin en reecrivant le trackPath
         for (int i = 0; i < trackPath.Count; i++)
         {
             trackPath[i] = new Vector2Int(trackPath[i].x -
-                minXDimension + 1, trackPath[i].y - minYDimension + 1);
+                minXDimension + 3, trackPath[i].y - minYDimension + 3);
             if (i == 0 || i == trackPath.Count - 1) level[trackPath[i].x, trackPath[i].y] = 2;
             else level[trackPath[i].x, trackPath[i].y] = 3;
         }
 
-        //On rajoute des arbres
+        //On rajoute de la verdure
         bool neighbor, shortcut;
         for (int i = 0; i < level.GetLength(0); i++)
             for (int j = 0; j < level.GetLength(1); j++)
                 if (level[i, j] == 0)
                 {
-                    if (i > 0 && i < level.GetLength(0) - 1 && j > 0 && j < level.GetLength(1) - 1)
+                    if (i > 2 && i < level.GetLength(0) - 3 && j > 2 && j < level.GetLength(1) - 3)
                     {
                         neighbor = shortcut = false;
                         //On rajoute des bordures au bord de la route, mais pas la ou il y a des raccourcis
@@ -177,65 +177,97 @@ public class LevelCreator : MonoBehaviour
                 }
 
         //On cree le niveau a proprement dit
-        SpawnLevel(level, trackPath);
+        SpawnPlayer();
+        SpawnDecorations(level);
+        SpawnTrack(level, trackPath);
     }
 
     /// <summary>
-    /// Utilise le tableau, pour creer les tuiles, puis le joueur
+    /// Spawn specifiquement le joueur
     /// </summary>
-    private void SpawnLevel(short[,] level, List<Vector2Int> trackPath)
+    private void SpawnPlayer()
     {
-        //Le joueur
         GameObject.Instantiate(player, new Vector3(startPosition.x * 6, 0, startPosition.y * 6 + 2),
             Quaternion.identity);
+    }
 
-        //Les tuiles decoratives
+    /// <summary>
+    /// Spawn specifiquement les tuiles "inutiles"
+    /// </summary>
+    private void SpawnDecorations(short[,] level)
+    {
         for (int i = 0; i < level.GetLength(0); i++)
             for (int j = 0; j < level.GetLength(1); j++) if (level[i, j] <= 1)
                     GameObject.Instantiate(blokz[level[i, j]],
                         new Vector3(i * 6, 0, j * 6), Quaternion.identity, transform);
+    }
 
-        //Les tuiles du circuit
-        GameObject.Instantiate(blokz[level[trackPath[0].x, trackPath[0].y]],
-            new Vector3(trackPath[0].x * 6, 0, trackPath[0].y * 6), Quaternion.identity, transform);
-        Vector2Int direction = new Vector2Int(0, 1);
-        float currentAngle = 0;
+    /// <summary>
+    /// Assure la creation du circuit a proprement parle
+    /// </summary>
+    private void SpawnTrack(short[,] level, List<Vector2Int> trackPath)
+    {
+        float turnAngle = 0;
 
+        //Premiere tuile
+        //Instanciation
+        Vector2Int direction = trackPath[1] - trackPath[0];
+        float currentAngle = Vector2.SignedAngle(direction, Vector2.up);
+        SpawnTile(blokz[2], trackPath[0] * 6, currentAngle);
+
+        //On boucle de 1 a n-1
         for (int i = 1; i < trackPath.Count - 1; i++)
         {
             //Changement de direction = virage !
             if (direction != trackPath[i + 1] - trackPath[i])
             {
-                //On s'occupe d'abord de rajouter le virage
-                currentAngle += Vector2.SignedAngle(direction, trackPath[i + 1] - trackPath[i]);
-                level[trackPath[i].x, trackPath[i].y] = 4;
-
-                //Les deux derniers enfants (ie, les deux blokz precedents)
-                //doivent etre capables d'envoyer des signaux
-                if (Vector2.SignedAngle(direction, trackPath[i + 1] - trackPath[i]) > 0)
-                {
-                    if (i > 1) transform.GetChild(transform.childCount - 1).
-                        GetComponent<TileValueGiver>().AddUI(0);
-                    if (i > 2) transform.GetChild(transform.childCount - 2).
-                        GetComponent<TileValueGiver>().AddUI(0);
-                }
-                else
-                {
-                    if (i > 1) transform.GetChild(transform.childCount - 1).
-                        GetComponent<TileValueGiver>().AddUI(1);
-                    if (i > 2) transform.GetChild(transform.childCount - 2).
-                        GetComponent<TileValueGiver>().AddUI(1);
-                }
-
-                //On finit par mettre la direction a jour
+                //MaJ variables
+                turnAngle = Vector2.SignedAngle(direction, trackPath[i + 1] - trackPath[i]);
+                currentAngle += turnAngle;
                 direction = trackPath[i + 1] - trackPath[i];
+                //On cree un virage de force
+                level[trackPath[i].x, trackPath[i].y] = 4;
             }
+            //Sinon, pas virage
+            else turnAngle = 0;
 
-            GameObject.Instantiate(blokz[level[trackPath[i].x, trackPath[i].y]],
-                new Vector3(trackPath[i].x * 6, 0, trackPath[i].y * 6), Quaternion.Euler(0, currentAngle, 0), transform);
+            //Spawn tuile
+            SpawnTile(blokz[level[trackPath[i].x, trackPath[i].y]], trackPath[i] * 6, currentAngle);
+
+            //Si y avait un virage, MaJ UI
+            if (turnAngle != 0)
+            {
+                if (turnAngle > 0) SetUpUI(0);
+                else SetUpUI(1);
+            }
         }
-        GameObject.Instantiate(blokz[level[trackPath[trackPath.Count - 1].x, trackPath[trackPath.Count - 1].y]],
-                new Vector3(trackPath[trackPath.Count - 1].x * 6, 0, trackPath[trackPath.Count - 1].y * 6), Quaternion.Euler(0, currentAngle, 0), transform);
+
+        //Derniere tuile
+        SpawnTile(blokz[2], trackPath[trackPath.Count - 1] * 6, currentAngle);
+    }
+
+    /// <summary>
+    /// Faire apparaitre une seul tuile
+    /// </summary>
+    private void SpawnTile(GameObject gameObject, Vector2Int pos, float angle)
+    {
+        GameObject.Instantiate(gameObject, new Vector3(pos.x, 0, pos.y), Quaternion.Euler(0, angle, 0), transform);
+    }
+
+    /// <summary>
+    /// Change l'UI pour les tuiles concernees
+    /// </summary>
+    private void SetUpUI(int uiIndex)
+    {
+        TileValueGiver tvg;
+        transform.GetChild(transform.childCount - 1).
+                        GetComponent<TileValueGiver>().RemoveUI(uiIndex);
+        if ((tvg = transform.GetChild(transform.childCount - 2).
+                        GetComponent<TileValueGiver>()) != null) tvg.AddUI(uiIndex);
+        if ((tvg = transform.GetChild(transform.childCount - 3).
+                        GetComponent<TileValueGiver>()) != null) tvg.AddUI(uiIndex);
+        if ((tvg = transform.GetChild(transform.childCount - 4).
+                        GetComponent<TileValueGiver>()) != null) tvg.AddUI(uiIndex);
     }
     #endregion
 }

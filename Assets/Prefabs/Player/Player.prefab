@@ -192,9 +192,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 802bb24b05715a44a93c6ed76fc0506a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftArrow: {fileID: 2625817163171162779}
-  rightArrow: {fileID: 6387273526391786233}
-  dangerSign: {fileID: 8480876686951757942}
+  leftArrow: {fileID: 6690960392574518276}
+  rightArrow: {fileID: 9153389049920398662}
+  dangerSign: {fileID: 3684760551004425011}
 --- !u!65 &5138480650693730005
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -206,8 +206,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.5, z: 1}
-  m_Center: {x: 0, y: 0.25, z: 0}
+  m_Size: {x: 1, y: 0.5, z: 0.8333333}
+  m_Center: {x: 0, y: 0.25, z: -0.75}
 --- !u!54 &2826629213087268022
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -678,7 +678,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2118706864031393923}
   - component: {fileID: 6351314295021471335}
-  - component: {fileID: 8480876686951757942}
+  - component: {fileID: 4520582367783006466}
   m_Layer: 0
   m_Name: UIWarningSign
   m_TagString: Untagged
@@ -753,7 +753,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8480876686951757942
+--- !u!114 &4520582367783006466
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -762,7 +762,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3684760551004425011}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6027a26ae6af50c4186086b94c28d793, type: 3}
+  m_Script: {fileID: 11500000, guid: caea3aba651267d48b67c74fa80aa1cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6690960392574518276
@@ -775,7 +775,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3477438528096774370}
   - component: {fileID: 5662173767182735745}
-  - component: {fileID: 2625817163171162779}
+  - component: {fileID: 5467790051082848762}
   m_Layer: 0
   m_Name: UILeftSign
   m_TagString: Untagged
@@ -850,7 +850,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2625817163171162779
+--- !u!114 &5467790051082848762
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -859,7 +859,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6690960392574518276}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6027a26ae6af50c4186086b94c28d793, type: 3}
+  m_Script: {fileID: 11500000, guid: caea3aba651267d48b67c74fa80aa1cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7834313405556771593
@@ -906,7 +906,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8365459105340587983}
   - component: {fileID: 8168552512529766706}
-  - component: {fileID: 6387273526391786233}
+  - component: {fileID: 5920452316169606561}
   m_Layer: 0
   m_Name: UIRightSign
   m_TagString: Untagged
@@ -981,7 +981,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6387273526391786233
+--- !u!114 &5920452316169606561
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -990,7 +990,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9153389049920398662}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6027a26ae6af50c4186086b94c28d793, type: 3}
+  m_Script: {fileID: 11500000, guid: caea3aba651267d48b67c74fa80aa1cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &2243418627444601605

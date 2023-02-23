@@ -8,19 +8,24 @@ public class TileValueGiver : MonoBehaviour
     private bool[] deactivation = new bool[3];
     #endregion
 
+    #region UnityMethods
+    private void OnTriggerEnter(Collider other)
+    {
+        other.GetComponent<UIManager>().ChangeUI(GetUIIndex(activation), true);
+        other.GetComponent<UIManager>().ChangeUI(GetUIIndex(deactivation), false);
+    }
+    #endregion
+
     #region PublicMethods
     public void AddUI(int ui) => activation[ui] = true;
 
     public void RemoveUI(int ui) => deactivation[ui] = true;
-
-    public void OnTriggerEnter(Collider other)
-    {
-        other.GetComponent<UIManager>().ShowUI(GetUIIndex(activation));
-        other.GetComponent<UIManager>().StopUI(GetUIIndex(deactivation));
-    }
     #endregion
 
     #region PrivateMethods
+    /// <summary>
+    /// Converti notre format (bool) en format d'ui (ints)
+    /// </summary>
     private int GetUIIndex(bool[] bools)
     {
         return (bools[0] ? 4 : 0) + (bools[1] ? 2 : 0) + (bools[2] ? 1 : 0);

@@ -71,14 +71,14 @@ public class SlidingState : StateBase
 
         if (movement.pedalsInput > 0 && rightVelocity < TranslateTopSpeed())
         {
-            rightVelocity += TranslateAcceleration() * Time.deltaTime;
+            rightVelocity += TranslateAcceleration() * .8f * Time.deltaTime;
             if (rightVelocity > TranslateTopSpeed()) rightVelocity = TranslateTopSpeed();
         }
         else if (rightVelocity > 0)
         {
             if (movement.pedalsInput < 0)
                 rightVelocity -= TranslateBraking() * Time.deltaTime;
-            else rightVelocity -= Time.deltaTime;
+            else if (movement.pedalsInput == 0) rightVelocity -= Time.deltaTime;
             if (rightVelocity < 0) rightVelocity = 0;
         }
 
@@ -133,7 +133,7 @@ public class SlidingState : StateBase
     private void Reslide()
     {
         movement.currentState = movement.slidingState;
-        movement.currentState.EnterState(rightVelocity, rightDirection, new Vector3(
+        movement.currentState.EnterState(rightVelocity + wrongVelocity, rightDirection, new Vector3(
             rightDirection.z * movement.turnInput, 0f,
             rightDirection.x * -movement.turnInput),
             trueZPosition, trueXPosition);

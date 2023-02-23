@@ -4,54 +4,33 @@ public class UIManager : MonoBehaviour
 {
     #region Variables
     [SerializeField]
-    private UISign leftArrow;
+    private GameObject leftArrow;
     [SerializeField]
-    private UISign rightArrow;
+    private GameObject rightArrow;
     [SerializeField]
-    private UISign dangerSign;
+    private GameObject dangerSign;
     #endregion
 
     #region PublicMethods
     /// <summary>
     /// 4- left arrow, 2- right arrow, 1- danger sign
     /// </summary>
-    public void ShowUI(int uiElement)
+    public void ChangeUI(int uiElement, bool shown)
     {
         if(uiElement >= 4)
         {
             uiElement -= 4;
-            leftArrow.gameObject.SetActive(true);
-            leftArrow.ShowUI();
+            leftArrow.gameObject.SetActive(shown);
         }
         if(uiElement >= 2)
         {
             uiElement -= 2;
-            rightArrow.gameObject.SetActive(true);
-            rightArrow.ShowUI();
+            rightArrow.gameObject.SetActive(shown);
         }
         if (uiElement >= 1)
         {
-            dangerSign.gameObject.SetActive(true);
-            dangerSign.ShowUI();
+            dangerSign.gameObject.SetActive(shown);
         }
-    }
-
-    /// <summary>
-    /// 4- left arrow, 2- right arrow, 1- danger sign
-    /// </summary>
-    public void StopUI(int uiElement)
-    {
-        if (uiElement >= 4)
-        {
-            uiElement -= 4;
-            leftArrow.StopUI();
-        }
-        if (uiElement >= 2)
-        {
-            uiElement -= 2;
-            rightArrow.StopUI();
-        }
-        if (uiElement >= 1) dangerSign.StopUI();
     }
     #endregion
 }

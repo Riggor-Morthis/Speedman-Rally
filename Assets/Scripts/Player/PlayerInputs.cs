@@ -10,9 +10,7 @@ public class PlayerInputs : MonoBehaviour
     private float turnInput;
     /// <summary>For 1 block slides</summary>
     public float steerInput { get; private set; }
-    public bool menuConfirmInput { get; private set; }
 
-    private float deadZone = .4f;
     private float turnBuffer;
     #endregion
 
@@ -23,8 +21,6 @@ public class PlayerInputs : MonoBehaviour
         turnInput = iv.Get<float>() != 0 ? Mathf.Sign(iv.Get<float>()) : 0;
     public void OnSteer(InputValue iv) =>
         steerInput = iv.Get<float>() != 0 ? Mathf.Sign(iv.Get<float>()) : 0;
-    public void OnMenuConfirm(InputValue iv) =>
-        menuConfirmInput = iv.Get<float>() > deadZone;
     #endregion
 
     #region PublicMethods

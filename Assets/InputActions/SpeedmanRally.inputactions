@@ -31,15 +31,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "MenuConfirm",
-                    "type": "Button",
-                    "id": "c59713e7-866f-463f-a72e-e52dc0be074f",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -141,17 +132,6 @@
                     "action": "Steer",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "31f6f410-8ed6-465a-94b9-5aa0d2533fd3",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "MenuConfirm",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         }
