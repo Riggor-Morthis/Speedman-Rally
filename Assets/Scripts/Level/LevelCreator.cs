@@ -16,6 +16,8 @@ public class LevelCreator : MonoBehaviour
     private Texture2D mapTexture;
 
     private Vector2Int startPosition;
+
+    private List<Vector2Int> trackPath;
     #endregion
 
     #region UnityMethods
@@ -33,14 +35,14 @@ public class LevelCreator : MonoBehaviour
     {
         //Recup map
         mapTexture = WaveFunctionCollapse.StartTheWave(Resources.Load<Texture2D>(mapPath));
-
         //Cherche depart
+        //On sait qu'il est sur la ligne du bas
         for (int i = 0; i < mapTexture.width; i++)
-            for (int j = 0; j < mapTexture.height; j++)
-                if (mapTexture.GetPixel(i, j) == new Color(255f / 255f, 0, 0)) startPosition = new Vector2Int(i, j);
+            if (mapTexture.GetPixel(i, 0) == new Color(1, 0, 0)) startPosition = new Vector2Int(i, 0);
 
         //On retrace le chemin le plus long
-        BuildTiles(GetTrackPath(startPosition, new List<Vector2Int>()));
+        trackPath = GetTrackPath(new Vector2Int(startPosition.x, startPosition.y + 1), new List<Vector2Int>() { startPosition });
+        BuildTiles();
     }
 
     /// <summary>
@@ -49,53 +51,62 @@ public class LevelCreator : MonoBehaviour
     /// </summary>
     private List<Vector2Int> GetTrackPath(Vector2Int cursor, List<Vector2Int> currentList)
     {
-        //Pour les comparaisons
-        List<Vector2Int> tempList;
+        Debug.Log(currentList.Count);
 
         //On se rajoute
         currentList.Add(cursor);
+        List<Vector2Int> resultList = new(), biggestList = new();
+        bool endOfTheTrack = true;
 
         //On cherche le chemin le plus long
         if (cursor.x - 1 >= 0 &&
             mapTexture.GetPixel(cursor.x - 1, cursor.y).r > 0 &&
             !currentList.Contains(new Vector2Int(cursor.x - 1, cursor.y)))
         {
-            tempList = GetTrackPath(new Vector2Int(cursor.x - 1, cursor.y), currentList);
-            if (tempList.Count > currentList.Count) currentList = tempList;
+            resultList = GetTrackPath(new Vector2Int(cursor.x - 1, cursor.y), currentList);
+            if (resultList.Count > biggestList.Count) biggestList = resultList;
+            endOfTheTrack = false;
         }
-        else if (cursor.x + 1 < mapTexture.width &&
+        if (cursor.x + 1 < mapTexture.width &&
             mapTexture.GetPixel(cursor.x + 1, cursor.y).r > 0 &&
             !currentList.Contains(new Vector2Int(cursor.x + 1, cursor.y)))
         {
-            tempList = GetTrackPath(new Vector2Int(cursor.x + 1, cursor.y), currentList);
-            if (tempList.Count > currentList.Count) currentList = tempList;
+            resultList = GetTrackPath(new Vector2Int(cursor.x + 1, cursor.y), currentList);
+            if (resultList.Count > biggestList.Count) biggestList = resultList;
+            endOfTheTrack = false;
         }
-        else if (cursor.y - 1 >= 0 &&
+        if (cursor.y - 1 >= 0 &&
             mapTexture.GetPixel(cursor.x, cursor.y - 1).r > 0 &&
             !currentList.Contains(new Vector2Int(cursor.x, cursor.y - 1)))
         {
-            tempList = GetTrackPath(new Vector2Int(cursor.x, cursor.y - 1), currentList);
-            if (tempList.Count > currentList.Count) currentList = tempList;
+            resultList = GetTrackPath(new Vector2Int(cursor.x, cursor.y - 1), currentList);
+            if (resultList.Count > biggestList.Count) biggestList = resultList;
+            endOfTheTrack = false;
         }
-        else if (cursor.y + 1 < mapTexture.height &&
+        if (cursor.y + 1 < mapTexture.height &&
             mapTexture.GetPixel(cursor.x, cursor.y + 1).r > 0 &&
             !currentList.Contains(new Vector2Int(cursor.x, cursor.y + 1)))
         {
-            tempList = GetTrackPath(new Vector2Int(cursor.x, cursor.y + 1), currentList);
-            if (tempList.Count > currentList.Count) currentList = tempList;
+            resultList = GetTrackPath(new Vector2Int(cursor.x, cursor.y + 1), currentList);
+            if (resultList.Count > biggestList.Count) biggestList = resultList;
+            endOfTheTrack = false;
         }
-        //Pas de voisin valide ? Cas d'arret
-        else return currentList;
 
-        //On remonte recursif
-        return currentList;
+        if (endOfTheTrack) return new List<Vector2Int>() { cursor };
+        else
+        {
+            biggestList.Add(cursor);
+            return biggestList;
+        }
     }
 
     /// <summary>
     /// Creer un format de niveau pour lecture ulterieure
     /// </summary>
-    private void BuildTiles(List<Vector2Int> trackPath)
+    private void BuildTiles()
     {
+        Debug.Log(trackPath.Count);
+
         //On cherche dimensions optimales
         int minXDimension = trackPath[0].x, maxXDimension = trackPath[0].x;
         int minYDimension = trackPath[0].y, maxYDimension = trackPath[0].y;
@@ -179,7 +190,7 @@ public class LevelCreator : MonoBehaviour
         //On cree le niveau a proprement dit
         SpawnPlayer();
         SpawnDecorations(level);
-        SpawnTrack(level, trackPath);
+        SpawnTrack(level);
     }
 
     /// <summary>
@@ -205,7 +216,7 @@ public class LevelCreator : MonoBehaviour
     /// <summary>
     /// Assure la creation du circuit a proprement parle
     /// </summary>
-    private void SpawnTrack(short[,] level, List<Vector2Int> trackPath)
+    private void SpawnTrack(short[,] level)
     {
         float turnAngle = 0;
 

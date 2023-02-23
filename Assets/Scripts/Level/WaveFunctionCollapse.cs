@@ -351,7 +351,7 @@ public static class WaveFunctionCollapse
 
     private static Texture2D CreateOutputTexture()
     {
-        Texture2D firstDraft = new Texture2D(input.width, input.height);
+        Texture2D output = new Texture2D(input.width, input.height);
         byte currentColor;
         Color trackColor = new Color(191f / 255f, 0f, 0f), offColor = new Color(0, 0, 0);
 
@@ -361,54 +361,72 @@ public static class WaveFunctionCollapse
                 currentColor = outputTiles[i, j].chosenColor;
                 if (currentColor >= 8)
                 {
-                    firstDraft.SetPixel(i * 2, j * 2, trackColor);
+                    output.SetPixel(i * 2, j * 2, trackColor);
                     currentColor -= 8;
                 }
-                else firstDraft.SetPixel(i * 2, j * 2, offColor);
+                else output.SetPixel(i * 2, j * 2, offColor);
 
                 if (currentColor >= 4)
                 {
-                    firstDraft.SetPixel(i * 2 + 1, j * 2, trackColor);
+                    output.SetPixel(i * 2 + 1, j * 2, trackColor);
                     currentColor -= 4;
                 }
-                else firstDraft.SetPixel(i * 2 + 1, j * 2, offColor);
+                else output.SetPixel(i * 2 + 1, j * 2, offColor);
 
                 if (currentColor >= 2)
                 {
-                    firstDraft.SetPixel(i * 2, j * 2 + 1, trackColor);
+                    output.SetPixel(i * 2, j * 2 + 1, trackColor);
                     currentColor -= 2;
                 }
-                else firstDraft.SetPixel(i * 2, j * 2 + 1, offColor);
+                else output.SetPixel(i * 2, j * 2 + 1, offColor);
 
-                if (currentColor >= 1) firstDraft.SetPixel(i * 2 + 1, j * 2 + 1, trackColor);
-                else firstDraft.SetPixel(i * 2 + 1, j * 2 + 1, offColor);
+                if (currentColor >= 1) output.SetPixel(i * 2 + 1, j * 2 + 1, trackColor);
+                else output.SetPixel(i * 2 + 1, j * 2 + 1, offColor);
             }
-        //Fin du brouillon
-        firstDraft.Apply();
-
-        //On relie les tuiles avec 2 voisins opposes
-        Texture2D output = firstDraft;
-        for (int i = 1; i < firstDraft.width - 1; i++) for (int j = 1; j < firstDraft.height - 1; j++)
-            {
-                if (firstDraft.GetPixel(i + 1, j).r > 0 && firstDraft.GetPixel(i - 1, j).r > 0)
-                {
-                    if (firstDraft.GetPixel(i, j + 1).r == 0 && firstDraft.GetPixel(i, j - 1).r == 0)
-                        output.SetPixel(i, j, trackColor);
-                }
-                else if (firstDraft.GetPixel(i, j + 1).r > 0 && firstDraft.GetPixel(i, j - 1).r > 0)
-                {
-                    if (firstDraft.GetPixel(i + 1, j).r == 0 && firstDraft.GetPixel(i - 1, j).r == 0)
-                        output.SetPixel(i, j, trackColor);
-                }
-            }
-
-        //On place la ligne et on envoie le tout
-        firstDraft.SetPixel(startCoordinates.x, startCoordinates.y, new Color(1, 0, 0));
         output.Apply();
 
+        //On relie les tuiles avec 2 voisins opposes
+        for (int i = 1; i < output.width - 1; i++) for (int j = 1; j < output.height - 1; j++)
+            {
+                if (output.GetPixel(i + 1, j).r > 0 && output.GetPixel(i - 1, j).r > 0)
+                {
+                    if (output.GetPixel(i, j + 1).r == 0 && output.GetPixel(i, j - 1).r == 0)
+                        output.SetPixel(i, j, trackColor);
+                }
+                else if (output.GetPixel(i, j + 1).r > 0 && output.GetPixel(i, j - 1).r > 0)
+                {
+                    if (output.GetPixel(i + 1, j).r == 0 && output.GetPixel(i - 1, j).r == 0)
+                        output.SetPixel(i, j, trackColor);
+                }
+            }
+        output.Apply();
+
+        //On enleve les clusters
+        for (int i = 0; i < output.width - 1; i++) for (int j = 0; j < output.height - 1; j++)
+            {
+                if(output.GetPixel(i, j).r > 0)
+                {
+                    if (output.GetPixel(i + 1, j).r > 0
+                        && output.GetPixel(i + 1, j + 1).r > 0
+                        && output.GetPixel(i, j + 1).r > 0)
+                        output.SetPixel(i, j, offColor);
+                }
+            }
+        output.Apply();
+
+        //On place la ligne d'arrivee et on trace une ligne droite vers le haut de la carte
+        output.SetPixel(startCoordinates.x, startCoordinates.y, new Color(1, 0, 0));
+        int index = startCoordinates.y + 1;
+        while(index < maxY && output.GetPixel(startCoordinates.x, index).r == 0)
+        {
+            output.SetPixel(startCoordinates.x, index, trackColor);
+            index++;
+        }
+        output.Apply();
+
+        //On envoie
         byte[] bytes = output.EncodeToPNG();
         File.WriteAllBytes(Application.dataPath + "/wfc.png", bytes);
-        Debug.Log(Application.dataPath + "/wfc.png");
         return output;
     }
     #endregion
