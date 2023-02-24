@@ -147,9 +147,14 @@ public class PlayerMovement : MonoBehaviour
     {
         canAct = false;
         audioManager.PlayCrashSound();
-        uiManager.HideEverything();
 
-        yield return new WaitForSecondsRealtime(1);
+        float timer = 1;
+        while(timer > 0)
+        {
+            uiManager.HideEverything();
+            timer -= Time.deltaTime;
+            yield return null;
+        }
 
         transform.position = previousPositions[0];
         transform.rotation = previousRotations[0];
