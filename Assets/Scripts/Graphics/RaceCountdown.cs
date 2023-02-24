@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class RaceCountdown : MonoBehaviour
 {
@@ -68,7 +69,6 @@ public class RaceCountdown : MonoBehaviour
         timeString[1] = time;
         chronometer -= time * 60f;
 
-        Debug.Log(timeString[0] + timeString[1] + "'");
         timeString[2] = 10;
 
         time = Mathf.FloorToInt(chronometer / 10f);
@@ -79,7 +79,6 @@ public class RaceCountdown : MonoBehaviour
         timeString[4] = time;
         chronometer -= time;
 
-        Debug.Log(timeString[3] + timeString[4] + "''");
         timeString[5] = 11;
         chronometer *= 100f;
 
@@ -150,7 +149,7 @@ public class RaceCountdown : MonoBehaviour
         {
             numberRenderers[i].sprite = darkSprites[timeString[i]];
         }
-
+        StartCoroutine(COScene());
         while (true)
         {
             StartCoroutine(COFlashTime(lightSprites));
@@ -158,6 +157,12 @@ public class RaceCountdown : MonoBehaviour
             StartCoroutine(COFlashTime(darkSprites));
             while (isFLashing) yield return null;
         }
+    }
+
+    private IEnumerator COScene()
+    {
+        yield return new WaitForSeconds(4f);
+        SceneManager.LoadScene(0);
     }
 
     private IEnumerator COFlashTime(Sprite[] currentColor)

@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEditor.Rendering.FilterWindow;
 
 /// <summary>
 /// When going straigth, after turn stabilisation
