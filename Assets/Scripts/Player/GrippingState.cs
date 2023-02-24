@@ -32,7 +32,7 @@ public class GrippingState : StateBase
         ChangeSteering();
         SetCorrectPosition();
 
-        if (movement.turnInput != 0) ExitState();
+        if (movement.turnInput != 0 && velocity > 0) ExitState();
     }
 
     public override void ExitState()
@@ -44,10 +44,8 @@ public class GrippingState : StateBase
             trueZPosition, trueXPosition);
     }
 
-    public override float GetSpeedRatio()
-    {
-        return velocity / TranslateTopSpeed();
-    }
+    public override float GetSpeedRatio() => velocity / TranslateTrueTopSpeed();
+    public override Vector3 GetDirection() => currentDirection;
     #endregion
 
     #region PrivateMethods
@@ -57,19 +55,16 @@ public class GrippingState : StateBase
     /// </summary>
     private void ChangeVelocity()
     {
-        if (movement.pedalsInput > 0)
+        if (movement.pedalsInput > 0 && velocity < TranslateTopSpeed())
         {
-            if (velocity < TranslateTopSpeed())
-            {
-                velocity += TranslateAcceleration() * Time.deltaTime;
-                if (velocity > TranslateTopSpeed()) velocity = TranslateTopSpeed();
-            }
+            velocity += TranslateAcceleration() * Time.deltaTime;
+            if (velocity > TranslateTopSpeed()) velocity = TranslateTopSpeed();
         }
         else if (velocity > 0)
         {
             if (movement.pedalsInput < 0)
                 velocity -= TranslateBraking() * Time.deltaTime;
-            else velocity -= Time.deltaTime;
+            else if (movement.pedalsInput == 0) velocity -= Time.deltaTime;
             if (velocity < 0) velocity = 0;
         }
 

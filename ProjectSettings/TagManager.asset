@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Enviro
+  - Car
   layers:
   - Default
   - TransparentFX
@@ -44,6 +46,12 @@ TagManager:
   - name: Terrain
     uniqueID: 1473301227
     locked: 0
+  - name: Particle
+    uniqueID: 1043610925
+    locked: 0
   - name: Vehicle
     uniqueID: 1458631769
+    locked: 0
+  - name: UI
+    uniqueID: 1208606103
     locked: 0

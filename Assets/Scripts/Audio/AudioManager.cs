@@ -14,10 +14,6 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField, Tooltip("Tant qu'on est dans l'etat de slide")]
     private AudioClip slidingSFX;
-    [SerializeField, Tooltip("Des qu'on bouge sur le cote")]
-    private AudioClip steeringSFX;
-    [SerializeField, Tooltip("Lorsqu'on appuie sur le frein")]
-    private AudioClip brakingSFX;
 
     private PlayerMovement movement;
     #endregion
@@ -30,7 +26,7 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(CO_EngineSounds());
+        StartCoroutine(CO_ProportionalSounds());
     }
 
     private void LateUpdate()
@@ -52,16 +48,6 @@ public class AudioManager : MonoBehaviour
             if (sfxChannel.clip != slidingSFX || !sfxChannel.isPlaying)
                 ChangeMainAudio(slidingSFX);
         }
-        else if(movement.GetSpeedRatio() > 0 && movement.steerInput != 0)
-        {
-            if (sfxChannel.clip != steeringSFX || !sfxChannel.isPlaying)
-                ChangeMainAudio(steeringSFX);
-        }
-        /*else if(movement.GetSpeedRatio() > 0 && movement.pedalsInput < 0)
-        {
-            if (sfxChannel.clip != brakingSFX || !sfxChannel.isPlaying)
-                ChangeMainAudio(brakingSFX);
-        }*/
 
         //Si on a rien a jouer, on laisse le channel special moteur faire son travail
         else
@@ -90,12 +76,14 @@ public class AudioManager : MonoBehaviour
     /// <summary>
     /// Ajuste les sons moteurs en temps reels pour coller a la realite
     /// </summary>
-    private IEnumerator CO_EngineSounds()
+    private IEnumerator CO_ProportionalSounds()
     {
         while (true)
         {
             engineChannel.volume = movement.GetSpeedRatio() * .1f + .22f;
             engineChannel.pitch = movement.GetSpeedRatio() * .8f + .2f;
+            sfxChannel.volume = movement.GetSpeedRatio() * .1f + .2f;
+            sfxChannel.pitch = movement.GetSpeedRatio() * .5f + .5f;
             yield return null;
         }
     }
