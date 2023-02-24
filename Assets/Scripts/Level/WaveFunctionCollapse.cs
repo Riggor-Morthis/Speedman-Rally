@@ -414,19 +414,23 @@ public static class WaveFunctionCollapse
             }
         output.Apply();
 
-        //On place la ligne d'arrivee et on trace une ligne droite vers le haut de la carte
+        //On place la ligne d'arrivee
         output.SetPixel(startCoordinates.x, startCoordinates.y, new Color(1, 0, 0));
+        output.SetPixel(startCoordinates.x - 1, startCoordinates.y, offColor);
+        output.SetPixel(startCoordinates.x + 1, startCoordinates.y, offColor);
+
+        //On trace une ligne droite vers le haut de la carte
         int index = startCoordinates.y + 1;
         while(index < maxY && output.GetPixel(startCoordinates.x, index).r == 0)
         {
             output.SetPixel(startCoordinates.x, index, trackColor);
+            output.SetPixel(startCoordinates.x - 1, index, offColor);
+            output.SetPixel(startCoordinates.x + 1, index, offColor);
             index++;
         }
         output.Apply();
 
         //On envoie
-        byte[] bytes = output.EncodeToPNG();
-        File.WriteAllBytes(Application.dataPath + "/wfc.png", bytes);
         return output;
     }
     #endregion

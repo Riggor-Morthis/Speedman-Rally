@@ -41,8 +41,7 @@ public class LevelCreator : MonoBehaviour
             if (mapTexture.GetPixel(i, 0) == new Color(1, 0, 0)) startPosition = new Vector2Int(i, 0);
 
         //On retrace le chemin le plus long
-        trackPath = GetTrackPath(new Vector2Int(startPosition.x, startPosition.y + 1), new List<Vector2Int>() { startPosition });
-        BuildTiles();
+        CleanUpTrackPath(GetTrackPath(new Vector2Int(startPosition.x, startPosition.y + 1), new List<Vector2Int>() { startPosition }));
     }
 
     /// <summary>
@@ -51,8 +50,6 @@ public class LevelCreator : MonoBehaviour
     /// </summary>
     private List<Vector2Int> GetTrackPath(Vector2Int cursor, List<Vector2Int> currentList)
     {
-        Debug.Log(currentList.Count);
-
         //On se rajoute
         currentList.Add(cursor);
         List<Vector2Int> resultList = new(), biggestList = new();
@@ -101,12 +98,45 @@ public class LevelCreator : MonoBehaviour
     }
 
     /// <summary>
+    /// Elimine boucle
+    /// Reecrit dans le bon ordre
+    /// Rajoute le depart
+    /// </summary>
+    private void CleanUpTrackPath(List<Vector2Int> biggestTrack)
+    {
+        int loopIndex = 0;
+        bool loopfound;
+
+        //Rajoute depart
+        trackPath = new List<Vector2Int>() { startPosition };
+
+        //On parcourt le biggestTrack dans le "bons sens"
+        //Donc sens inverse
+        for(int i = biggestTrack.Count - 1; i >= 0; i--)
+        {
+            //On rajoute une tuile
+            trackPath.Add(biggestTrack[i]);
+
+            //On cherche une boucle rattachee a cette tuile
+            if (i > 1) loopIndex = i - 2;
+            loopfound = false;
+
+            while(loopIndex >= 0 && !loopfound)
+            {
+                if ((biggestTrack[i] - biggestTrack[loopIndex]).magnitude == 1) loopfound = true;
+                else loopIndex--;
+            }
+            if (loopfound) i = loopIndex + 1;
+        }
+
+        BuildTiles();
+    }
+
+    /// <summary>
     /// Creer un format de niveau pour lecture ulterieure
     /// </summary>
     private void BuildTiles()
     {
-        Debug.Log(trackPath.Count);
-
         //On cherche dimensions optimales
         int minXDimension = trackPath[0].x, maxXDimension = trackPath[0].x;
         int minYDimension = trackPath[0].y, maxYDimension = trackPath[0].y;
