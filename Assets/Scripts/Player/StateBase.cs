@@ -59,18 +59,24 @@ public abstract class StateBase
     //Translate player-friendly stats into maths-friendly stats
     protected float TranslateTopSpeed()
     {
-        if (movement.steerInput != 0) return (17.5f * (statTopSpeed / 10f) + 10) * .8f;
+        if (movement.steerInput != 0 && movement.offroadIndex > 0)
+            return (17.5f * (statTopSpeed / 10f) + 10) * .6f;
+        else if (movement.steerInput != 0 || movement.offroadIndex > 0)
+            return (17.5f * (statTopSpeed / 10f) + 10) * .8f;
         else return 17.5f * (statTopSpeed / 9f) + 10;
     }
     protected float TranslateTrueTopSpeed() =>
         17.5f * (statTopSpeed / 9f) + 10;
     protected float TranslateAcceleration()
     {
-        if (movement.steerInput != 0) return (3 * (statAcceleration / 10f) + 3) * .75f;
+        if (movement.steerInput != 0 && movement.offroadIndex > 0)
+            return (3 * (statAcceleration / 10f) + 3) * .5f;
+        else if (movement.steerInput != 0 || movement.offroadIndex > 0)
+            return (3 * (statAcceleration / 10f) + 3) * .75f;
         return 3 * (statAcceleration / 9f) + 3;
     }
     protected float TranslateBraking() =>
-        3.5f * (statBraking / 9f) + 4.5f;
+        4f * (statBraking / 9f) + 5f;
     protected float TranslateHandling() =>
         2.5f * (statHandling / 9f) + 2;
     //
@@ -81,7 +87,7 @@ public abstract class StateBase
     /// </summary>
     protected void SetCorrectPosition()
     {
-        if(currentXPosition != Mathf.RoundToInt(trueXPosition * 6f) ||
+        if (currentXPosition != Mathf.RoundToInt(trueXPosition * 6f) ||
             currentZPosition != Mathf.RoundToInt(trueZPosition * 6f))
         {
             currentXPosition = Mathf.RoundToInt(trueXPosition * 6f);

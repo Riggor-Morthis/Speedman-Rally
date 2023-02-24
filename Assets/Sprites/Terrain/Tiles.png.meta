@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4d68e51990c33c04896fbf13602eec62
+guid: 51f19e37f38fdb94f95d06df0b8b28b3
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -129,43 +129,127 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Tiles_0
+      name: tiles_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 6
-        height: 6
-      alignment: 9
+        y: 72
+        width: 36
+        height: 36
+      alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0df1de48c8ae66541b7d0bf9cce0d381
-      internalID: 1498727797
+      spriteID: 4b1feece328169543a62a7a60148b529
+      internalID: 379354632
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tiles_1
+      name: tiles_1
       rect:
         serializedVersion: 2
-        x: 6
-        y: 0
-        width: 6
-        height: 6
-      alignment: 9
+        x: 36
+        y: 72
+        width: 36
+        height: 36
+      alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 420958b5907303b4d81199ca99ced5b2
-      internalID: 907794237
+      spriteID: 6321812b2a2ebac479611e7c1f9aa000
+      internalID: 188277966
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tiles_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 36
+        width: 36
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c61a985b711666428a3690d704cca51
+      internalID: -1440049866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tiles_3
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 36
+        width: 36
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab3d35b1d80b43b4b97e6c24f7556b04
+      internalID: -908934729
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tiles_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 36
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 69f9f2726c9d44645b0ab437859d5197
+      internalID: 55504561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tiles_5
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 0
+        width: 36
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ef20b6bdba2f2d40a2958d95682dea9
+      internalID: -403982605
       vertices: []
       indices: 
       edges: []
@@ -173,7 +257,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: e54cdc225f9e07540aec325c518e240e
+    spriteID: 0a27a5ecfa70b03498da345e5f8f2dae
     internalID: 0
     vertices: []
     indices: 
@@ -181,8 +265,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Tiles_1: 907794237
-      Tiles_0: 1498727797
+      tiles_5: -403982605
+      tiles_1: 188277966
+      tiles_3: -908934729
+      tiles_4: 55504561
+      tiles_0: 379354632
+      tiles_2: -1440049866
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

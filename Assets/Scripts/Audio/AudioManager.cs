@@ -5,15 +5,23 @@ using UnityEngine.Audio;
 public class AudioManager : MonoBehaviour
 {
     #region Variables
-    [SerializeField, Tooltip("La source dediee aux sons prioritaires du vehicule")]
-    private AudioSource sfxChannel;
+    [SerializeField, Tooltip("La source dediee uniquement aux sons d'une slide")]
+    private AudioSource slideChannel;
     [SerializeField, Tooltip("La source dediee uniquement aux sons du moteur")]
     private AudioSource engineChannel;
 
     [Space]
 
-    [SerializeField, Tooltip("Tant qu'on est dans l'etat de slide")]
-    private AudioClip slidingSFX;
+    [SerializeField, Tooltip("La source pour les sons prioritaires")]
+    private AudioSource sfxChannel;
+    [SerializeField, Tooltip("Lorsqu'on rentre dans un arbre")]
+    private AudioClip crashSFX;
+    [SerializeField, Tooltip("Compte a rebours")]
+    private AudioClip lightSFX;
+    [SerializeField, Tooltip("Depart")]
+    private AudioClip startSFX;
+    [SerializeField, Tooltip("Arrivee")]
+    private AudioClip endSFX;
 
     private PlayerMovement movement;
     #endregion
@@ -35,27 +43,43 @@ public class AudioManager : MonoBehaviour
     }
     #endregion
 
+    #region PublicMethods
+    public void PlayCrashSound() => ChangeMainAudio(crashSFX);
+    public void PlayLightSound() => ChangeMainAudio(lightSFX);
+    public void PlayStartSound() => ChangeMainAudio(startSFX);
+    public void PlayEndSound()
+    {
+        ChangeMainAudio(endSFX);
+        engineChannel.Stop();
+        slideChannel.Stop();
+    }
+    #endregion
+
     #region PrivateMethods
     /// <summary>
     /// Pour s'assurer qu'on joue le bon son
     /// </summary>
     private void UpdateSoundChannels()
     {
-        //On regarde l'etat de la voiture, et quel son on doit jouer en consequence
-        //On a qu'un son a la fois, donc il faut des priorites
-        if (movement.GetSpeedRatio() > 0 && movement.currentState == movement.slidingState)
+        //On agit que si on a pas de son prioritaire
+        if (!sfxChannel.isPlaying)
         {
-            if (sfxChannel.clip != slidingSFX || !sfxChannel.isPlaying)
-                ChangeMainAudio(slidingSFX);
-        }
-
-        //Si on a rien a jouer, on laisse le channel special moteur faire son travail
-        else
-        {
-            if (engineChannel.mute)
+            //Lancer une slide
+            if (movement.GetSpeedRatio() > 0 && movement.currentState == movement.slidingState)
             {
-                sfxChannel.Stop();
-                engineChannel.mute = false;
+                if (slideChannel.mute)
+                {
+                    engineChannel.mute = true;
+                    slideChannel.mute = false;
+                }
+            }
+            else
+            {
+                if (engineChannel.mute)
+                {
+                    slideChannel.mute = true;
+                    engineChannel.mute = false;
+                }
             }
         }
     }
@@ -65,9 +89,11 @@ public class AudioManager : MonoBehaviour
     /// </summary>
     private void ChangeMainAudio(AudioClip currentClip)
     {
-        sfxChannel.Stop();
-        sfxChannel.clip = currentClip;
+        slideChannel.mute = true;
         engineChannel.mute = true;
+        sfxChannel.Stop();
+
+        sfxChannel.clip = currentClip;
         sfxChannel.Play();
     }
     #endregion
@@ -82,8 +108,8 @@ public class AudioManager : MonoBehaviour
         {
             engineChannel.volume = movement.GetSpeedRatio() * .1f + .22f;
             engineChannel.pitch = movement.GetSpeedRatio() * .8f + .2f;
-            sfxChannel.volume = movement.GetSpeedRatio() * .1f + .2f;
-            sfxChannel.pitch = movement.GetSpeedRatio() * .5f + .5f;
+            slideChannel.volume = movement.GetSpeedRatio() * .1f + .2f;
+            slideChannel.pitch = movement.GetSpeedRatio() * .5f + .5f;
             yield return null;
         }
     }

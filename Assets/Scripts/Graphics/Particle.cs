@@ -35,7 +35,7 @@ public class Particle : MonoBehaviour
         trueZPosition = truePosition.z;
         currentXPosition = currentZPosition = 0;
         direction = dir;
-        lifeSpan = 1;
+        lifeSpan = .6f;
 
         Trajectory();
     }

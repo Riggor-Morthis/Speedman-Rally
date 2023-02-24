@@ -170,7 +170,9 @@ MonoBehaviour:
   player: {fileID: 2243418627512560510, guid: fabc119dbf7d595488d2432b61eddeae, type: 3}
   blokz:
   - {fileID: 1286955914316685965, guid: 41cd1b1c72074b74aa100b92cfb1bdb3, type: 3}
+  - {fileID: 1286955914316685965, guid: 275f295cba575d146a8a25faac973bf2, type: 3}
   - {fileID: 8250982811646663188, guid: 123a697aa0f822446b500eb57f37cbbe, type: 3}
   - {fileID: 322978537771448664, guid: 01bcb337810029242b834688c4ca74f4, type: 3}
+  - {fileID: 322978537771448664, guid: af1eea2a825698e49966cdd9aee6f9f0, type: 3}
   - {fileID: 8476726171630384097, guid: f88ea2a77fa6d6b40986a17185c2dfe3, type: 3}
   - {fileID: 5332685466284831044, guid: dd3f8a7b4453f054e8bfa795dfe4a669, type: 3}

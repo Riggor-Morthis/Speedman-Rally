@@ -12,6 +12,13 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region PublicMethods
+    public void HideEverything()
+    {
+        leftArrow.gameObject.SetActive(false);
+        rightArrow.gameObject.SetActive(false);
+        dangerSign.gameObject.SetActive(false);
+    }
+
     /// <summary>
     /// 4- left arrow, 2- right arrow, 1- danger sign
     /// </summary>

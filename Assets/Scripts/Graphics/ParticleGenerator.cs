@@ -21,8 +21,7 @@ public class ParticleGenerator : MonoBehaviour
 
     private void Update()
     {
-        //Une chance sur 4 de faire apparaitre une particule
-        if (Random.Range(0f, 15f) < movement.GetSpeedRatio()) SpawnParticle();
+        if (Random.Range(0f, 12f) < movement.GetSpeedRatio()) SpawnParticle();
     }
     #endregion
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8476726171630384098}
   - component: {fileID: 6740721251239774076}
   m_Layer: 0
-  m_Name: fo_RoadBlokz
+  m_Name: roadBlokz
   m_TagString: Enviro
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10, y: 1, z: 10}
+  m_Size: {x: 6, y: 1, z: 6}
   m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &6740721251239774076
 MonoBehaviour:
@@ -132,12 +132,12 @@ SpriteRenderer:
   m_SortingLayerID: 1473301227
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1967014610, guid: 51f19e37f38fdb94f95d06df0b8b28b3, type: 3}
+  m_Sprite: {fileID: -1440049866, guid: 51f19e37f38fdb94f95d06df0b8b28b3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 8, y: 8}
+  m_Size: {x: 6, y: 6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
