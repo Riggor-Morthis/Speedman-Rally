@@ -12,18 +12,27 @@ public class LevelCreator : MonoBehaviour
     [SerializeField]
     private GameObject[] blokz;
 
-    private string mapPath = "Map/Forest3";
+    private string mapPath = "Map/track1";
     private Texture2D mapTexture;
 
     private Vector2Int startPosition;
 
     private List<Vector2Int> trackPath;
+    private float minTrackPathLength;
     #endregion
 
     #region UnityMethods
     private void Awake()
     {
-        GetTilePath();
+        mapTexture = Resources.Load<Texture2D>(mapPath);
+        minTrackPathLength = (mapTexture.width * mapTexture.height) / 6f;
+
+        do
+        {
+            GetTilePath();
+        } while (trackPath.Count < minTrackPathLength);
+
+        BuildTiles();
     }
     #endregion
 
@@ -112,7 +121,7 @@ public class LevelCreator : MonoBehaviour
 
         //On parcourt le biggestTrack dans le "bons sens"
         //Donc sens inverse
-        for(int i = biggestTrack.Count - 1; i >= 0; i--)
+        for (int i = biggestTrack.Count - 1; i >= 0; i--)
         {
             //On rajoute une tuile
             trackPath.Add(biggestTrack[i]);
@@ -121,15 +130,13 @@ public class LevelCreator : MonoBehaviour
             if (i > 1) loopIndex = i - 2;
             loopfound = false;
 
-            while(loopIndex >= 0 && !loopfound)
+            while (loopIndex >= 0 && !loopfound)
             {
                 if ((biggestTrack[i] - biggestTrack[loopIndex]).magnitude == 1) loopfound = true;
                 else loopIndex--;
             }
             if (loopfound) i = loopIndex + 1;
         }
-
-        BuildTiles();
     }
 
     /// <summary>
@@ -158,8 +165,8 @@ public class LevelCreator : MonoBehaviour
         {
             trackPath[i] = new Vector2Int(trackPath[i].x -
                 minXDimension + 3, trackPath[i].y - minYDimension + 3);
-            if (i == 0 || i == trackPath.Count - 1) level[trackPath[i].x, trackPath[i].y] = 2;
-            else level[trackPath[i].x, trackPath[i].y] = 3;
+            if (i == 0 || i == trackPath.Count - 1) level[trackPath[i].x, trackPath[i].y] = 3;
+            else level[trackPath[i].x, trackPath[i].y] = 5;
         }
 
         //On rajoute de la verdure
@@ -172,48 +179,49 @@ public class LevelCreator : MonoBehaviour
                     {
                         neighbor = shortcut = false;
                         //On rajoute des bordures au bord de la route, mais pas la ou il y a des raccourcis
-                        if (level[i - 1, j - 1] > 1)
+                        if (level[i - 1, j - 1] > 2)
                         {
                             neighbor = true;
-                            if (level[i + 1, j + 1] > 1) shortcut = true;
+                            if (level[i + 1, j + 1] > 2) shortcut = true;
                         }
-                        if (level[i - 1, j] > 1)
+                        if (level[i - 1, j] > 2)
                         {
                             neighbor = true;
-                            if (level[i + 1, j] > 1) shortcut = true;
+                            if (level[i + 1, j] > 2) shortcut = true;
                         }
-                        if (level[i - 1, j + 1] > 1)
+                        if (level[i - 1, j + 1] > 2)
                         {
                             neighbor = true;
-                            if (level[i + 1, j - 1] > 1) shortcut = true;
+                            if (level[i + 1, j - 1] > 2) shortcut = true;
                         }
-                        if (level[i - 1, j] > 1)
+                        if (level[i - 1, j] > 2)
                         {
                             neighbor = true;
-                            if (level[i + 1, j] > 1) shortcut = true;
+                            if (level[i + 1, j] > 2) shortcut = true;
                         }
-                        if (level[i + 1, j] > 1)
+                        if (level[i + 1, j] > 2)
                         {
                             neighbor = true;
-                            if (level[i - 1, j] > 1) shortcut = true;
+                            if (level[i - 1, j] > 2) shortcut = true;
                         }
-                        if (level[i + 1, j - 1] > 1)
+                        if (level[i + 1, j - 1] > 2)
                         {
                             neighbor = true;
-                            if (level[i - 1, j + 1] > 1) shortcut = true;
+                            if (level[i - 1, j + 1] > 2) shortcut = true;
                         }
-                        if (level[i + 1, j] > 1)
+                        if (level[i + 1, j] > 2)
                         {
                             neighbor = true;
-                            if (level[i - 1, j] > 1) shortcut = true;
+                            if (level[i - 1, j] > 2) shortcut = true;
                         }
-                        if (level[i + 1, j + 1] > 1)
+                        if (level[i + 1, j + 1] > 2)
                         {
                             neighbor = true;
-                            if (level[i - 1, j - 1] > 1) shortcut = true;
+                            if (level[i - 1, j - 1] > 2) shortcut = true;
                         }
                         //Si on est bon, on est bon
-                        if (neighbor && !shortcut) level[i, j] = 1;
+                        if (neighbor && !shortcut) level[i, j] = 2;
+                        else if (shortcut && Random.Range(0f, 1f) <= .5f) level[i, j] = 1;
                     }
                 }
 
@@ -228,7 +236,7 @@ public class LevelCreator : MonoBehaviour
     /// </summary>
     private void SpawnPlayer()
     {
-        GameObject.Instantiate(player, new Vector3(startPosition.x * 6, 0, startPosition.y * 6 + 2),
+        GameObject.Instantiate(player, new Vector3(startPosition.x * 6, 0, startPosition.y * 6 + 1),
             Quaternion.identity);
     }
 
@@ -238,7 +246,7 @@ public class LevelCreator : MonoBehaviour
     private void SpawnDecorations(short[,] level)
     {
         for (int i = 0; i < level.GetLength(0); i++)
-            for (int j = 0; j < level.GetLength(1); j++) if (level[i, j] <= 1)
+            for (int j = 0; j < level.GetLength(1); j++) if (level[i, j] <= 2)
                     GameObject.Instantiate(blokz[level[i, j]],
                         new Vector3(i * 6, 0, j * 6), Quaternion.identity, transform);
     }
@@ -254,7 +262,7 @@ public class LevelCreator : MonoBehaviour
         //Instanciation
         Vector2Int direction = trackPath[1] - trackPath[0];
         float currentAngle = Vector2.SignedAngle(direction, Vector2.up);
-        SpawnTile(blokz[2], trackPath[0] * 6, currentAngle);
+        SpawnTile(blokz[3], trackPath[0] * 6, currentAngle);
 
         //On boucle de 1 a n-1
         for (int i = 1; i < trackPath.Count - 1; i++)
@@ -267,7 +275,7 @@ public class LevelCreator : MonoBehaviour
                 currentAngle += turnAngle;
                 direction = trackPath[i + 1] - trackPath[i];
                 //On cree un virage de force
-                level[trackPath[i].x, trackPath[i].y] = 4;
+                level[trackPath[i].x, trackPath[i].y] = 6;
             }
             //Sinon, pas virage
             else turnAngle = 0;
@@ -276,7 +284,7 @@ public class LevelCreator : MonoBehaviour
             SpawnTile(blokz[level[trackPath[i].x, trackPath[i].y]], trackPath[i] * 6, currentAngle);
 
             //Si y avait un virage, MaJ UI
-            if (turnAngle != 0)
+            if (i > 3 && turnAngle != 0)
             {
                 if (turnAngle > 0) SetUpUI(0);
                 else SetUpUI(1);
@@ -284,7 +292,7 @@ public class LevelCreator : MonoBehaviour
         }
 
         //Derniere tuile
-        SpawnTile(blokz[2], trackPath[trackPath.Count - 1] * 6, currentAngle);
+        SpawnTile(blokz[4], trackPath[trackPath.Count - 1] * 6, currentAngle);
     }
 
     /// <summary>
@@ -300,15 +308,9 @@ public class LevelCreator : MonoBehaviour
     /// </summary>
     private void SetUpUI(int uiIndex)
     {
-        TileValueGiver tvg;
-        transform.GetChild(transform.childCount - 1).
-                        GetComponent<TileValueGiver>().RemoveUI(uiIndex);
-        if ((tvg = transform.GetChild(transform.childCount - 2).
-                        GetComponent<TileValueGiver>()) != null) tvg.AddUI(uiIndex);
-        if ((tvg = transform.GetChild(transform.childCount - 3).
-                        GetComponent<TileValueGiver>()) != null) tvg.AddUI(uiIndex);
-        if ((tvg = transform.GetChild(transform.childCount - 4).
-                        GetComponent<TileValueGiver>()) != null) tvg.AddUI(uiIndex);
+        transform.GetChild(transform.childCount - 2).GetComponent<TileValueGiver>().RemoveUI(uiIndex);
+        transform.GetChild(transform.childCount - 2).GetComponent<TileValueGiver>().AddUI(uiIndex);
+        transform.GetChild(transform.childCount - 3).GetComponent<TileValueGiver>().AddUI(uiIndex);
     }
     #endregion
 }

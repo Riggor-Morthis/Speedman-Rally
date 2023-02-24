@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEditor.Rendering.FilterWindow;
 
 /// <summary>
 /// When going straigth, after turn stabilisation
@@ -15,7 +16,10 @@ public class GrippingState : StateBase
     #region PublicMethods
     public GrippingState(PlayerMovement pm) : base(pm)
     {
-        currentDirection = Vector3.forward;
+        if (movement.transform.rotation.eulerAngles.y == 90) currentDirection = Vector3.right;
+        else if (movement.transform.rotation.eulerAngles.y == 270) currentDirection = Vector3.left;
+        else if (movement.transform.rotation.eulerAngles.y == 180) currentDirection = Vector3.back;
+        else currentDirection = Vector3.forward;
     }
 
     public override void EnterState(float vel, Vector3 oldDir, Vector3 newDir, float tzp, float txp)

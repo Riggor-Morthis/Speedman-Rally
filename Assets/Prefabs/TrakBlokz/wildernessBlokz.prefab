@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: 1473301227
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1414224368, guid: 51f19e37f38fdb94f95d06df0b8b28b3, type: 3}
+  m_Sprite: {fileID: -403982605, guid: 51f19e37f38fdb94f95d06df0b8b28b3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -95,8 +95,9 @@ GameObject:
   - component: {fileID: 1286955914316685967}
   - component: {fileID: 1286955914316685964}
   - component: {fileID: -8863167065267567871}
+  - component: {fileID: 9178419254426144363}
   m_Layer: 0
-  m_Name: fo_WildernessBlokz
+  m_Name: wildernessBlokz
   m_TagString: Enviro
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -141,5 +142,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f72d355e60967248bebe1256fede8ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &9178419254426144363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1286955914316685965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87a4c5ac81ffd8147a94aa596beca04b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
