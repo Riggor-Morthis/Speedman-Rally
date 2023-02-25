@@ -5,6 +5,13 @@ using UnityEngine.SceneManagement;
 public class RaceCountdown : MonoBehaviour
 {
     #region Variables
+    [SerializeField, Tooltip("La ou on affiche les instructions")]
+    private SpriteRenderer instuctionsRenderer;
+    [SerializeField, Tooltip("Les ordres")]
+    private Sprite[] instructions = new Sprite[2];
+
+    [Space]
+
     [SerializeField, Tooltip("La ou on affiche nos lights")]
     private SpriteRenderer startRenderer;
     [SerializeField, Tooltip("Les trois etats de la lumiere")]
@@ -28,6 +35,9 @@ public class RaceCountdown : MonoBehaviour
     private int time;
     private int[] timeString = new int[8];
     private bool isFLashing = false;
+
+    private AsyncOperation loadMenuAsync;
+    private bool readyToSwitch;
     #endregion
 
     #region UnityMethods
@@ -41,6 +51,7 @@ public class RaceCountdown : MonoBehaviour
     {
         isRacing = true;
         StartCoroutine(COInitialCountdown());
+        StartCoroutine(COScenesLoader());
     }
     #endregion
 
@@ -94,6 +105,16 @@ public class RaceCountdown : MonoBehaviour
     #region Coroutines
     private IEnumerator COInitialCountdown()
     {
+        for(int i = 0; i < 5; i++)
+        {
+            instuctionsRenderer.sprite = instructions[0];
+            yield return new WaitForSeconds(.5f);
+            instuctionsRenderer.sprite = instructions[1];
+            yield return new WaitForSeconds(.5f);
+        }
+
+        instuctionsRenderer.gameObject.SetActive(false);
+        startRenderer.gameObject.SetActive(true);
         audioManager.PlayLightSound();
 
         float timer = 1;
@@ -134,6 +155,17 @@ public class RaceCountdown : MonoBehaviour
         startRenderer.gameObject.SetActive(false);
     }
 
+    private IEnumerator COScenesLoader()
+    {
+        loadMenuAsync = SceneManager.LoadSceneAsync(0);
+
+        loadMenuAsync.allowSceneActivation = false;
+
+        while (loadMenuAsync.progress < .9f) yield return null;
+
+        readyToSwitch = true;
+    }
+
     private IEnumerator Chronometer()
     {
         do
@@ -161,8 +193,11 @@ public class RaceCountdown : MonoBehaviour
 
     private IEnumerator COScene()
     {
-        yield return new WaitForSeconds(4f);
-        SceneManager.LoadScene(0);
+        yield return new WaitForSeconds(5f);
+
+        while (!readyToSwitch) yield return null;
+
+        loadMenuAsync.allowSceneActivation = true;
     }
 
     private IEnumerator COFlashTime(Sprite[] currentColor)
