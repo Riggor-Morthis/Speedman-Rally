@@ -40,6 +40,9 @@ public class PlayerMovement : MonoBehaviour
         InitializeVariables();
         InitializeStateMachine();
         StartCoroutine(COStockPosition());
+
+        Debug.Log(ChampionshipData.accelerationStat + " " + ChampionshipData.topSpeedStat + " " +
+            ChampionshipData.handlingStat + " " + ChampionshipData.brakingStat);
     }
 
     private void Update()

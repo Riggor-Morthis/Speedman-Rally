@@ -28,15 +28,24 @@ public class RaceCountdown : MonoBehaviour
     [SerializeField, Tooltip("Pour ecrire fonce")]
     private Sprite[] darkSprites = new Sprite[12];
 
+    [Space]
+    [SerializeField]
+    private GameObject lostScreen;
+    [SerializeField]
+    private SpriteRenderer lostRenderer;
+    [SerializeField]
+    private Sprite[] gameOvers = new Sprite[2];
+
     private PlayerMovement movement;
     private AudioManager audioManager;
     private bool isRacing;
     private float chronometer = 0f;
+    private float maxChronometer;
     private int time;
     private int[] timeString = new int[8];
     private bool isFLashing = false;
 
-    private AsyncOperation loadMenuAsync;
+    private AsyncOperation loadNextSceneAsync;
     private bool readyToSwitch;
     #endregion
 
@@ -51,7 +60,6 @@ public class RaceCountdown : MonoBehaviour
     {
         isRacing = true;
         StartCoroutine(COInitialCountdown());
-        StartCoroutine(COScenesLoader());
     }
     #endregion
 
@@ -63,8 +71,16 @@ public class RaceCountdown : MonoBehaviour
         movement.ChangeCarStatus(false);
         audioManager.PlayEndSound();
 
+        ChampionshipData.IncreaseStageNumber();
+
         CalculateTime();
         StartCoroutine(COShowTime());
+    }
+
+    public void SetTimeLimit(int trackLength)
+    {
+        maxChronometer = (.612f - ChampionshipData.GetStatTotal() * .002f)
+            * (float)trackLength;
     }
     #endregion
 
@@ -105,7 +121,7 @@ public class RaceCountdown : MonoBehaviour
     #region Coroutines
     private IEnumerator COInitialCountdown()
     {
-        for(int i = 0; i < 5; i++)
+        for (int i = 0; i < 3; i++)
         {
             instuctionsRenderer.sprite = instructions[0];
             yield return new WaitForSeconds(.5f);
@@ -155,13 +171,11 @@ public class RaceCountdown : MonoBehaviour
         startRenderer.gameObject.SetActive(false);
     }
 
-    private IEnumerator COScenesLoader()
+    private IEnumerator COScenesLoader(int index)
     {
-        loadMenuAsync = SceneManager.LoadSceneAsync(0);
-
-        loadMenuAsync.allowSceneActivation = false;
-
-        while (loadMenuAsync.progress < .9f) yield return null;
+        loadNextSceneAsync = SceneManager.LoadSceneAsync(index);
+        loadNextSceneAsync.allowSceneActivation = false;
+        while (loadNextSceneAsync.progress < .9f) yield return null;
 
         readyToSwitch = true;
     }
@@ -172,12 +186,37 @@ public class RaceCountdown : MonoBehaviour
         {
             yield return null;
             chronometer += Time.deltaTime;
+            if (chronometer > maxChronometer) isRacing = false;
         } while (isRacing);
+
+        if (chronometer > maxChronometer) StartCoroutine(COShowLoss());
+    }
+
+    private IEnumerator COShowLoss()
+    {
+        StartCoroutine(COScenesLoader(0));
+
+        movement.ChangeCarStatus(false);
+        audioManager.PlayGameOverSound();
+        lostScreen.SetActive(true);
+
+        for (int i = 0; i < 5; i++)
+        {
+            lostRenderer.sprite = gameOvers[0];
+            yield return new WaitForSeconds(.5f);
+            lostRenderer.sprite = gameOvers[1];
+            yield return new WaitForSeconds(.5f);
+        }
+
+        while (!readyToSwitch) yield return null;
+        loadNextSceneAsync.allowSceneActivation = true;
     }
 
     private IEnumerator COShowTime()
     {
-        for(int i = 0; i < numberRenderers.Length; i++)
+        StartCoroutine(COScenesLoader(2));
+
+        for (int i = 0; i < numberRenderers.Length; i++)
         {
             numberRenderers[i].sprite = darkSprites[timeString[i]];
         }
@@ -196,8 +235,7 @@ public class RaceCountdown : MonoBehaviour
         yield return new WaitForSeconds(5f);
 
         while (!readyToSwitch) yield return null;
-
-        loadMenuAsync.allowSceneActivation = true;
+        loadNextSceneAsync.allowSceneActivation = true;
     }
 
     private IEnumerator COFlashTime(Sprite[] currentColor)

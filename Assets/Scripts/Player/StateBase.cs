@@ -9,13 +9,6 @@ public abstract class StateBase
     //Acces inputs
     protected PlayerMovement movement;
 
-    //stats du vehicle
-    protected int statTopSpeed = 3;
-    protected int statAcceleration = 3;
-    protected int statBraking = 3;
-    protected int statHandling = 3;
-    protected int statHealth = 100;
-
     //Stats de calcul
     protected float trueZPosition, trueXPosition;
     protected int currentZPosition, currentXPosition;
@@ -60,25 +53,25 @@ public abstract class StateBase
     protected float TranslateTopSpeed()
     {
         if (movement.steerInput != 0 && movement.offroadIndex > 0)
-            return (17.5f * (statTopSpeed / 10f) + 10) * .6f;
+            return (17.5f * (ChampionshipData.topSpeedStat / 9f) + 10) * .6f;
         else if (movement.steerInput != 0 || movement.offroadIndex > 0)
-            return (17.5f * (statTopSpeed / 10f) + 10) * .8f;
-        else return 17.5f * (statTopSpeed / 9f) + 10;
+            return (17.5f * (ChampionshipData.topSpeedStat / 9f) + 10) * .8f;
+        else return 17.5f * (ChampionshipData.topSpeedStat / 9f) + 10;
     }
     protected float TranslateTrueTopSpeed() =>
-        17.5f * (statTopSpeed / 9f) + 10;
+        17.5f * (ChampionshipData.topSpeedStat / 9f) + 10;
     protected float TranslateAcceleration()
     {
         if (movement.steerInput != 0 && movement.offroadIndex > 0)
-            return (3 * (statAcceleration / 10f) + 3) * .5f;
+            return (3 * (ChampionshipData.accelerationStat / 9f) + 3) * .5f;
         else if (movement.steerInput != 0 || movement.offroadIndex > 0)
-            return (3 * (statAcceleration / 10f) + 3) * .75f;
-        return 3 * (statAcceleration / 9f) + 3;
+            return (3 * (ChampionshipData.accelerationStat / 9f) + 3) * .75f;
+        return 3 * (ChampionshipData.accelerationStat / 9f) + 3;
     }
     protected float TranslateBraking() =>
-        4f * (statBraking / 9f) + 5f;
+        4f * (ChampionshipData.brakingStat / 9f) + 5f;
     protected float TranslateHandling() =>
-        2.5f * (statHandling / 9f) + 2;
+        2.5f * (ChampionshipData.handlingStat / 9f) + 2;
     //
 
     /// <summary>

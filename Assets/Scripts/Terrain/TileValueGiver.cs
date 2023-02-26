@@ -18,7 +18,7 @@ public class TileValueGiver : MonoBehaviour
 
     #region PublicMethods
     public void AddUI(int ui) => activation[ui] = true;
-    public void RemoveUI(int ui) => deactivation[ui] = false;
+    public void RemoveUI(int ui) => deactivation[ui] = true;
     #endregion
 
     #region PrivateMethods
