@@ -188,13 +188,13 @@ public static class WaveFunctionCollapse
     #endregion
 
     #region PublicMethods
-    public static Texture2D StartTheWave(Texture2D ipt)
+    public static Texture2D StartTheWave(Texture2D ipt, int width, int height)
     {
         input = ipt;
 
         GetTileList();
-        CreateOutputTrack();
-        return CreateOutputTexture();
+        CreateOutputTrack(width, height);
+        return CreateOutputTexture(width, height);
     }
     #endregion
 
@@ -255,13 +255,16 @@ public static class WaveFunctionCollapse
     /// <summary>
     /// Permet de creer la liste des tuiles qui composeront l'image
     /// </summary>
-    private static void CreateOutputTrack()
+    private static void CreateOutputTrack(int width, int height)
     {
         int currentX, currentY;
         float currentEntropy;
         byte currentColorCode;
         bool remaining = true;
         int checkX, checkY;
+
+        maxX = width / 2;
+        maxY = height / 2;
 
         //On cree une liste de la taille de l'image de depart
         outputTiles = new OutputTile[maxX, maxY];
@@ -349,9 +352,9 @@ public static class WaveFunctionCollapse
         return null;
     }
 
-    private static Texture2D CreateOutputTexture()
+    private static Texture2D CreateOutputTexture(int width, int height)
     {
-        Texture2D output = new Texture2D(input.width, input.height);
+        Texture2D output = new Texture2D(width, height);
         byte currentColor;
         Color trackColor = new Color(191f / 255f, 0f, 0f), offColor = new Color(0, 0, 0);
 

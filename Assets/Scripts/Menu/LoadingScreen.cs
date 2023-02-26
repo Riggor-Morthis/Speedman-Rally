@@ -19,6 +19,7 @@ public class LoadingScreen : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         inputs = GetComponent<PlayerInput>();
+        ChampionshipData.InitData();
     }
 
     private void Start()

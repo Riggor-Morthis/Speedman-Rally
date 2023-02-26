@@ -21,6 +21,8 @@ public class AudioManager : MonoBehaviour
     private AudioClip startSFX;
     [SerializeField, Tooltip("Arrivee")]
     private AudioClip endSFX;
+    [SerializeField, Tooltip("Perdu")]
+    private AudioClip lossSFX;
 
     private PlayerMovement movement;
     #endregion
@@ -49,6 +51,12 @@ public class AudioManager : MonoBehaviour
     public void PlayEndSound()
     {
         ChangeMainAudio(endSFX);
+        engineChannel.Stop();
+        slideChannel.Stop();
+    }
+    public void PlayGameOverSound()
+    {
+        ChangeMainAudio(lossSFX);
         engineChannel.Stop();
         slideChannel.Stop();
     }

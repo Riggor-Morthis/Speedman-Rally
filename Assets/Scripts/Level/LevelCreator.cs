@@ -12,20 +12,23 @@ public class LevelCreator : MonoBehaviour
     [SerializeField]
     private GameObject[] blokz;
 
-    private string mapPath = "Map/track1";
+    private string mapPath = "Map/track";
     private Texture2D mapTexture;
 
     private Vector2Int startPosition;
 
     private List<Vector2Int> trackPath;
+    int trackWidth, trackHeight;
     private float minTrackPathLength;
     #endregion
 
     #region UnityMethods
     private void Awake()
     {
-        mapTexture = Resources.Load<Texture2D>(mapPath);
-        minTrackPathLength = (mapTexture.width * mapTexture.height) / 6f;
+        trackWidth = 16 + ChampionshipData.stageNumber * 2;
+        trackHeight = 48 + ChampionshipData.stageNumber * 6;
+
+        minTrackPathLength = (trackWidth * trackHeight) / 6f;
 
         do
         {
@@ -43,7 +46,7 @@ public class LevelCreator : MonoBehaviour
     private void GetTilePath()
     {
         //Recup map
-        mapTexture = WaveFunctionCollapse.StartTheWave(Resources.Load<Texture2D>(mapPath));
+        mapTexture = WaveFunctionCollapse.StartTheWave(Resources.Load<Texture2D>(mapPath), trackWidth, trackHeight);
         //Cherche depart
         //On sait qu'il est sur la ligne du bas
         for (int i = 0; i < mapTexture.width; i++)
@@ -236,8 +239,10 @@ public class LevelCreator : MonoBehaviour
     /// </summary>
     private void SpawnPlayer()
     {
-        GameObject.Instantiate(player, new Vector3(startPosition.x * 6, 0, startPosition.y * 6 + 1),
+        GameObject p = GameObject.Instantiate(player,
+            new Vector3(startPosition.x * 6, 0, startPosition.y * 6 + 1),
             Quaternion.identity);
+        p.GetComponent<RaceCountdown>().SetTimeLimit(trackPath.Count);
     }
 
     /// <summary>
@@ -272,7 +277,7 @@ public class LevelCreator : MonoBehaviour
             {
                 //MaJ variables
                 turnAngle = Vector2.SignedAngle(direction, trackPath[i + 1] - trackPath[i]);
-                currentAngle += turnAngle;
+                currentAngle -= turnAngle;
                 direction = trackPath[i + 1] - trackPath[i];
                 //On cree un virage de force
                 level[trackPath[i].x, trackPath[i].y] = 6;
@@ -308,7 +313,7 @@ public class LevelCreator : MonoBehaviour
     /// </summary>
     private void SetUpUI(int uiIndex)
     {
-        transform.GetChild(transform.childCount - 2).GetComponent<TileValueGiver>().RemoveUI(uiIndex);
+        transform.GetChild(transform.childCount - 1).GetComponent<TileValueGiver>().RemoveUI(uiIndex);
         transform.GetChild(transform.childCount - 2).GetComponent<TileValueGiver>().AddUI(uiIndex);
         transform.GetChild(transform.childCount - 3).GetComponent<TileValueGiver>().AddUI(uiIndex);
     }
